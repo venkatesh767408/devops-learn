@@ -5,6 +5,7 @@ import "./App.css";
 
 function App() {
   const [tasks, setTasks] = useState([]);
+  const name = "eagle";
 
   const addTask = (taskText) => {
     if (taskText.trim() === "") return;
