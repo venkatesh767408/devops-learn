@@ -2,9 +2,9 @@ name: CI - Advanced React Vite Quality Check
 
 on:
   push:
-    branches: [ "*" ]
+    branches: ['*']
   pull_request:
-    branches: [ "*" ]
+    branches: ['*']
 
 jobs:
   build:

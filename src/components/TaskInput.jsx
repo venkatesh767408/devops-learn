@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 function TaskInput({ onAdd }) {
-  const [text, setText] = useState("");
+  const [text, setText] = useState('');
 
   const handleAdd = () => {
     onAdd(text);
-    setText("");
+    setText('');
   };
 
   return (

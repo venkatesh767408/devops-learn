@@ -1,14 +1,13 @@
-import React, { useState } from "react";
-import TaskInput from "./components/TaskInput";
-import TaskList from "./components/TaskList";
-import "./App.css";
+import React, { useState } from 'react';
+import TaskInput from './components/TaskInput';
+import TaskList from './components/TaskList';
+import './App.css';
 
 function App() {
   const [tasks, setTasks] = useState([]);
-  
 
   const addTask = (taskText) => {
-    if (taskText.trim() === "") return;
+    if (taskText.trim() === '') return;
     const newTask = { id: Date.now(), text: taskText, completed: false };
     setTasks([newTask, ...tasks]);
   };
