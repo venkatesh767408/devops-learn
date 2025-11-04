@@ -28,11 +28,11 @@ jobs:
 
       # 4️⃣ Lint Check (ESLint)
       - name: Run ESLint
-        run: npm run lint 
+        run: npm run lint
 
       # 5️⃣ Code Formatting Check (Prettier)
       - name: Check formatting
-        run: npm run format 
+        run: npm run format
 
       # 6️⃣ Build the React (Vite) App
       - name: Build project
@@ -40,7 +40,7 @@ jobs:
 
       # 7️⃣ Run Tests with Coverage (Vitest)
       - name: Run Tests with Coverage
-        run: npm run test -- --coverage 
+        run: npm run test -- --coverage
 
       # 8️⃣ Security Audit (optional but useful)
       - name: Security Audit

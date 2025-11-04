@@ -5,7 +5,6 @@ import './App.css';
 
 function App() {
   const [tasks, setTasks] = useState([]);
- 
 
   const addTask = (taskText) => {
     if (taskText.trim() === '') return;
