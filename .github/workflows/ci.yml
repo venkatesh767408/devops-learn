@@ -28,11 +28,11 @@ jobs:
 
       # 4️⃣ Lint Check (ESLint)
       - name: Run ESLint
-        run: npm run lint || true
+        run: npm run lint 
 
       # 5️⃣ Code Formatting Check (Prettier)
       - name: Check formatting
-        run: npm run format || true
+        run: npm run format 
 
       # 6️⃣ Build the React (Vite) App
       - name: Build project
