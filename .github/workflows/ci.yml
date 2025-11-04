@@ -40,11 +40,11 @@ jobs:
 
       # 7️⃣ Run Tests with Coverage (Vitest)
       - name: Run Tests with Coverage
-        run: npm run test -- --coverage || true
+        run: npm run test -- --coverage 
 
       # 8️⃣ Security Audit (optional but useful)
       - name: Security Audit
-        run: npm audit --production --audit-level=moderate || true
+        run: npm audit --production --audit-level=moderate
 
       # 9️⃣ Upload Coverage Report Artifact
       - name: Upload coverage report
