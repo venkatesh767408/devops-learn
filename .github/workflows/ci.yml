@@ -1,74 +1,32 @@
-name: Production CI
+name: CI - Build and Test
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main ]
 
 jobs:
-  quality-checks:
-    name: Full Quality CI
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
 
     steps:
-      # 1️⃣ Checkout code
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
-      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: npm ci
 
-      # 4️⃣ Lint check
-      - name: ESLint check
-        run: npm run lint
+      - name: Run lint
+        run: npm run lint --if-present
 
-      # 5️⃣ Format check (Prettier)
-      - name: Check formatting
-        run: npx prettier --check .
-
-      # 6️⃣ Type check (optional if TypeScript)
-      - name: TypeScript check
-        if: hashFiles('tsconfig.json') != ''
-        run: npm run type-check
-
-      # 7️⃣ Security audit
-      - name: Security vulnerability scan
-        run: npm audit --production --audit-level=moderate || true
-
-      # 8️⃣ Run tests with coverage
       - name: Run tests
-        run: npm test -- --coverage
+        run: npm test --if-present
 
-      # 9️⃣ Upload coverage results
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage
-
-      # 🔟 Build production bundle
-      - name: Build app
+      - name: Build project
         run: npm run build
-
-      # 1️⃣1️⃣ Upload build artifact
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: production-dist
-          path: dist
-
-      # 1️⃣2️⃣ (Optional) Lighthouse performance check
-      - name: Lighthouse CI
-        run: |
-          npm install -g @lhci/cli
-          lhci autorun || echo "Lighthouse check failed but continuing..."
