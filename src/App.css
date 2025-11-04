@@ -1,0 +1,130 @@
+/* General App Layout */
+body {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app {
+  width: 420px;
+  background: #ffffff;
+  padding: 30px 25px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
+}
+
+.app:hover {
+  transform: translateY(-2px);
+}
+
+h1 {
+  margin-bottom: 25px;
+  color: #1a1a1a;
+  font-size: 1.8rem;
+  letter-spacing: 0.5px;
+}
+
+/* Task Input Section */
+.task-input {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f2f4f7;
+  border-radius: 10px;
+  padding: 6px 8px;
+  margin-bottom: 20px;
+  border: 1px solid #e0e0e0;
+}
+
+.task-input input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 10px;
+  font-size: 15px;
+  background: transparent;
+  color: #333;
+}
+
+.task-input button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.task-input button:hover {
+  background: #0056b3;
+}
+
+/* Task List */
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Task Item */
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fafafa;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  border: 1px solid #eee;
+  transition: all 0.3s ease;
+}
+
+.task-item:hover {
+  background: #f0f8ff;
+  transform: scale(1.01);
+}
+
+.task-item span {
+  flex: 1;
+  text-align: left;
+  cursor: pointer;
+  color: #333;
+  font-size: 15px;
+  transition: color 0.3s;
+}
+
+.task-item.completed span {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.task-item button {
+  border: none;
+  background: #ff4d4d;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease;
+}
+
+.task-item button:hover {
+  background: #e60000;
+}
+
+/* Empty State */
+.empty {
+  color: #777;
+  font-size: 15px;
+  text-align: center;
+  margin-top: 10px;
+}
