@@ -3,10 +3,10 @@ name: CI/CD - Advanced React Vite Quality Check + EC2 Deploy
 on:
   push:
     branches:
-      - main       # only deploy main branch to production
+      - main # only deploy main branch to production
   pull_request:
     branches:
-      - '*'        # run CI on all branches for PRs
+      - '*' # run CI on all branches for PRs
 
 jobs:
   # --------------------- CI JOB ---------------------
@@ -91,8 +91,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "dist.tar.gz"
-          target: "/home/${{ secrets.EC2_USER }}/"
+          source: 'dist.tar.gz'
+          target: '/home/${{ secrets.EC2_USER }}/'
 
       # 4️⃣ Run remote deploy script on EC2
       - name: Run deploy script
