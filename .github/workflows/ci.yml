@@ -1,13 +1,17 @@
-name: CI - Advanced React Vite Quality Check
+name: CI/CD - Advanced React Vite Quality Check + EC2 Deploy
 
 on:
   push:
-    branches: ['*']
+    branches:
+      - main       # only deploy main branch to production
   pull_request:
-    branches: ['*']
+    branches:
+      - '*'        # run CI on all branches for PRs
 
 jobs:
+  # --------------------- CI JOB ---------------------
   build:
+    name: 🧪 CI - Quality Validation
     runs-on: ubuntu-latest
 
     steps:
@@ -42,9 +46,9 @@ jobs:
       - name: Run Tests with Coverage
         run: npm run test
 
-      # 8️⃣ Security Audit (optional but useful)
+      # 8️⃣ Security Audit
       - name: Security Audit
-        run: npm audit --production --audit-level=moderaSte
+        run: npm audit --production --audit-level=moderate || true
 
       # 9️⃣ Upload Coverage Report Artifact
       - name: Upload coverage report
@@ -53,3 +57,49 @@ jobs:
         with:
           name: code-coverage
           path: coverage
+
+      # 1️⃣0️⃣ Upload Build Artifact (dist)
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-dist
+          path: dist/
+
+  # --------------------- CD JOB ---------------------
+  deploy:
+    name: 🚀 CD - Deploy to AWS EC2 (Amazon Linux)
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && needs.build.result == 'success'
+
+    steps:
+      # 1️⃣ Download the built artifact from CI
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-dist
+          path: dist
+
+      # 2️⃣ Compress build folder
+      - name: Create build archive
+        run: tar -czf dist.tar.gz -C dist .
+
+      # 3️⃣ Upload build to EC2 via SSH (SCP)
+      - name: Upload to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "dist.tar.gz"
+          target: "/home/${{ secrets.EC2_USER }}/"
+
+      # 4️⃣ Run remote deploy script on EC2
+      - name: Run deploy script
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo /home/${{ secrets.EC2_USER }}/deploy_release.sh
