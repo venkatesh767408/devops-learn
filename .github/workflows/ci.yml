@@ -3,13 +3,13 @@ name: CI/CD - Advanced React Vite Quality Check + EC2 Deploy
 on:
   push:
     branches:
-      - main # only deploy main branch to production
+      - main # Deploy only when code is merged into main branch
   pull_request:
     branches:
-      - '*' # run CI on all branches for PRs
+      - '*' # Run CI on all branches for PRs
 
 jobs:
-  # --------------------- CI JOB ---------------------
+  # --------------------- 🧪 CI JOB ---------------------
   build:
     name: 🧪 CI - Quality Validation
     runs-on: ubuntu-latest
@@ -58,14 +58,14 @@ jobs:
           name: code-coverage
           path: coverage
 
-      # 1️⃣0️⃣ Upload Build Artifact (dist)
+      # 🔟 Upload Build Artifact (dist)
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-dist
           path: dist/
 
-  # --------------------- CD JOB ---------------------
+  # --------------------- 🚀 CD JOB ---------------------
   deploy:
     name: 🚀 CD - Deploy to AWS EC2 (Amazon Linux)
     runs-on: ubuntu-latest
@@ -80,11 +80,11 @@ jobs:
           name: build-dist
           path: dist
 
-      # 2️⃣ Compress build folder
+      # 2️⃣ Compress the build folder
       - name: Create build archive
         run: tar -czf dist.tar.gz -C dist .
 
-      # 3️⃣ Upload build to EC2 via SSH (SCP)
+      # 3️⃣ Upload build archive to EC2 (via SCP)
       - name: Upload to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -93,6 +93,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: 'dist.tar.gz'
           target: '/home/${{ secrets.EC2_USER }}/'
+          debug: true   # Enables verbose output for troubleshooting
 
       # 4️⃣ Run remote deploy script on EC2
       - name: Run deploy script
@@ -102,4 +103,10 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo /home/${{ secrets.EC2_USER }}/deploy_release.sh
+            echo "✅ Connected to EC2 successfully"
+            cd /home/${{ secrets.EC2_USER }}
+            echo "📦 Extracting new build..."
+            tar -xzf dist.tar.gz -C /var/www/html/
+            echo "♻️ Restarting Nginx..."
+            sudo systemctl restart nginx
+            echo "🚀 Deployment completed successfully!"
