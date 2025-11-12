@@ -118,19 +118,19 @@ jobs:
             set -e
             echo "🔁 Starting Zero-Downtime Deployment..."
             cd /home/${{ secrets.EC2_USER }}
-            
+
             # Clean old files with safe permission handling
             sudo rm -rf /var/www/reactapp/tmp || true
             sudo mkdir -p /var/www/reactapp/tmp
             sudo chown -R $USER:$USER /var/www/reactapp/tmp
-            
+
             # Extract new build safely
             tar -xzf dist.tar.gz -C /var/www/reactapp/tmp
-            
+
             # Replace production files atomically
             sudo rm -rf /var/www/reactapp/assets
             sudo mv /var/www/reactapp/tmp/* /var/www/reactapp/
-            
+
             # Restart web services
             sudo systemctl restart nginx || true
             echo "✅ Deployment completed successfully!"
