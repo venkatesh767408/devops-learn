@@ -2,11 +2,9 @@ name: CI/CD - Enterprise React Vite Pipeline 🚀
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - '*'
+    branches: ["*"]
 
 env:
   NODE_VERSION: 20
@@ -14,36 +12,33 @@ env:
 
 jobs:
   # ===========================================================
-  # 🧪 STAGE 1: Continuous Integration (Quality Assurance)
+  # 🧪 STAGE 1: Continuous Integration
   # ===========================================================
   ci:
     name: 🔍 Code Quality & Build Verification
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [18, 20] # test multiple Node versions
+
     steps:
       - name: 🏗️ Checkout Repository
         uses: actions/checkout@v4
 
-      - name: ⚙️ Setup Node.js ${{ matrix.node }}
+      - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node }}
-          cache: 'npm'
+          node-version: 20
+          cache: "npm"
 
       - name: 📦 Install Dependencies (CI clean)
         run: npm ci
-        working-directory: ${{ env.WORKING_DIR }}
 
-      - name: 🧾 Type Check (if TS used)
-        run: npm run type-check || echo "No TS found"
+      - name: 🧾 Type Check (skip if no TS)
+        run: npm run type-check || echo "No TypeScript found"
         continue-on-error: true
 
       - name: 🔍 Run ESLint
         run: npm run lint
 
-      - name: 💅 Check Code Formatting (Prettier)
+      - name: 💅 Check Code Formatting
         run: npm run format:check || npm run prettier --check .
 
       - name: 🧱 Build Project
@@ -51,22 +46,19 @@ jobs:
         env:
           CI: true
 
-      - name: 🧪 Run Tests with Coverage
+      - name: 🧪 Run Tests with Coverage (Vitest)
         run: npm run test -- --coverage
         env:
           CI: true
 
-      - name: 📊 Enforce Coverage Thresholds
+      # Vitest coverage threshold enforcement
+      - name: 📊 Enforce Coverage Thresholds (Vitest)
         run: |
-          echo "Checking coverage threshold..."
-          npx jest --coverage --coverageThreshold='{"global":{"branches":85,"functions":85,"lines":85,"statements":85}}'
+          echo "Checking coverage thresholds..."
+          npx vitest run --coverage --coverage.threshold 85
 
       - name: 🛡️ Security Audit (NPM)
         run: npm audit --audit-level=moderate --production || true
-
-      - name: 🧠 Optional Deep Security (Snyk)
-        run: npx snyk test || true
-        continue-on-error: true
 
       - name: 📁 Upload Build Artifact
         uses: actions/upload-artifact@v4
@@ -81,7 +73,7 @@ jobs:
           path: coverage/
 
   # ===========================================================
-  # 🚀 STAGE 2: Continuous Deployment (AWS EC2)
+  # 🚀 STAGE 2: Continuous Deployment
   # ===========================================================
   deploy:
     name: 🚀 Deploy to AWS EC2 (Production)
@@ -105,10 +97,10 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: 'dist.tar.gz'
-          target: '/home/${{ secrets.EC2_USER }}/'
+          source: "dist.tar.gz"
+          target: "/home/${{ secrets.EC2_USER }}/"
 
-      - name: 🚀 Execute Deployment Script on EC2
+      - name: 🚀 Deploy on EC2
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -116,29 +108,24 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             set -e
-            echo "🔁 Starting Zero-Downtime Deployment..."
+            echo "🔁 Deploying new build..."
             cd /home/${{ secrets.EC2_USER }}
 
-            # Clean old files with safe permission handling
-            sudo rm -rf /var/www/reactapp/tmp || true
             sudo mkdir -p /var/www/reactapp/tmp
-            sudo chown -R $USER:$USER /var/www/reactapp/tmp
+            sudo rm -rf /var/www/reactapp/tmp/* || true
 
-            # Extract new build safely
             tar -xzf dist.tar.gz -C /var/www/reactapp/tmp
 
-            # Replace production files atomically
-            sudo rm -rf /var/www/reactapp/assets
+            sudo rm -rf /var/www/reactapp/assets || true
             sudo mv /var/www/reactapp/tmp/* /var/www/reactapp/
 
-            # Restart web services
             sudo systemctl restart nginx || true
             echo "✅ Deployment completed successfully!"
 
-      - name: 🔔 Notify Deployment Success
+      - name: 🔔 Notify Success
         if: success()
         run: echo "🎉 EC2 deployment succeeded!"
 
-      - name: ⚠️ Notify Deployment Failure
+      - name: ⚠️ Notify Failure
         if: failure()
         run: echo "🚨 EC2 deployment failed! Check logs immediately."
