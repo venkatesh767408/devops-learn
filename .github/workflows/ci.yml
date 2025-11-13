@@ -52,7 +52,7 @@ jobs:
           CI: true
 
       - name: 🧪 Run Tests with Coverage
-        run: npm run test -- --coverage --watchAll=false
+        run: npm run test -- --coverage
         env:
           CI: true
 
