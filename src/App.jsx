@@ -27,7 +27,7 @@ function App() {
   return (
     <div className="app">
       <h1>Task Manager</h1>
-      <h2>Add a Task here</h2>
+      <h2 className='add-task'>Add a Task here</h2>
       <TaskInput onAdd={addTask} />
       <TaskList tasks={tasks} onToggle={toggleTask} onDelete={deleteTask} />
     </div>
