@@ -5,7 +5,6 @@ import './App.css';
 
 function App() {
   const [tasks, setTasks] = useState([]);
-  const name = "Eagle";
 
   const addTask = (taskText) => {
     if (taskText.trim() === '') return;
@@ -26,9 +25,9 @@ function App() {
   };
 
   return (
-    <div className="app">
+<div className="app">
       <h1>Task Manager 2</h1>
-      <h2 className='add-task'>Add a Task here</h2>
+      <h2 className="add-task">Add a Task here</h2>
       <TaskInput onAdd={addTask} />
       <TaskList tasks={tasks} onToggle={toggleTask} onDelete={deleteTask} />
     </div>
