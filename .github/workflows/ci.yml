@@ -2,7 +2,7 @@ name: CI/CD - Enterprise React Vite Pipeline 🚀
 
 on:
   push:
-    branches: [main]
+    branches: [main ]
   pull_request:
     branches: ["*"]
 
@@ -129,3 +129,4 @@ jobs:
       - name: ⚠️ Notify Failure
         if: failure()
         run: echo "🚨 EC2 deployment failed! Check logs immediately."
+        
