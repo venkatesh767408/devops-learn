@@ -2,7 +2,7 @@ name: CI/CD - Enterprise React Vite Pipeline 🚀
 
 on:
   push:
-    branches: [main ]
+    branches: [main]
   pull_request:
     branches: ["*"]
 
@@ -25,8 +25,8 @@ jobs:
       - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: "npm"
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
 
       - name: 📦 Install Dependencies (CI clean)
         run: npm ci
@@ -51,14 +51,11 @@ jobs:
         env:
           CI: true
 
-      # Vitest coverage threshold enforcement
       - name: 📊 Enforce Coverage Thresholds (Vitest)
-        run: |
-          echo "Checking coverage thresholds..."
-          npx vitest run --coverage --coverage.threshold 85
+        run: npx vitest run --coverage --coverage.threshold 85
 
       - name: 🛡️ Security Audit (NPM)
-        run: npm audit --audit-level=moderate --production || true
+        run: npm audit --audit-level=moderate || true
 
       - name: 📁 Upload Build Artifact
         uses: actions/upload-artifact@v4
@@ -73,10 +70,10 @@ jobs:
           path: coverage/
 
   # ===========================================================
-  # 🚀 STAGE 2: Continuous Deployment
+  # 🚀 STAGE 2: Continuous Deployment (Netlify – Testing)
   # ===========================================================
   deploy:
-    name: 🚀 Deploy to AWS EC2 (Production)
+    name: 🚀 Deploy to Netlify (Testing)
     runs-on: ubuntu-latest
     needs: ci
     if: github.ref == 'refs/heads/main' && needs.ci.result == 'success'
@@ -88,45 +85,13 @@ jobs:
           name: react-build-dist
           path: dist
 
-      - name: 📦 Create Deployment Package
-        run: tar -czf dist.tar.gz -C dist .
+      - name: 📦 Install Netlify CLI
+        run: npm install -g netlify-cli
 
-      - name: 🔐 Upload to EC2 via SCP
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "dist.tar.gz"
-          target: "/home/${{ secrets.EC2_USER }}/"
-
-      - name: 🚀 Deploy on EC2
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            set -e
-            echo "🔁 Deploying new build..."
-            cd /home/${{ secrets.EC2_USER }}
-
-            sudo mkdir -p /var/www/reactapp/tmp
-            sudo rm -rf /var/www/reactapp/tmp/* || true
-
-            tar -xzf dist.tar.gz -C /var/www/reactapp/tmp
-
-            sudo rm -rf /var/www/reactapp/assets || true
-            sudo mv /var/www/reactapp/tmp/* /var/www/reactapp/
-
-            sudo systemctl restart nginx || true
-            echo "✅ Deployment completed successfully!"
-
-      - name: 🔔 Notify Success
-        if: success()
-        run: echo "🎉 EC2 deployment succeeded!"
-
-      - name: ⚠️ Notify Failure
-        if: failure()
-        run: echo "🚨 EC2 deployment failed! Check logs immediately."
-        
+      - name: 🚀 Deploy to Netlify
+        run: |
+          netlify deploy \
+            --dir=dist \
+            --site=$NETLIFY_SITE_ID \
+            --auth=$NETLIFY_AUTH_TOKEN \
+            --prod
