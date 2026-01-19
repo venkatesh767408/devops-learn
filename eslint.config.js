@@ -6,6 +6,15 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
   globalIgnores(['dist']),
+   prettierConfig,
+  {
+    plugins: {
+      prettier,
+    },
+    rules: {
+      'prettier/prettier': 'error',
+    },
+  },
   {
     ignores: [
       "dist/**",

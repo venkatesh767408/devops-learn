@@ -59,6 +59,9 @@ jobs:
             }
           "
 
+      - name: 🎨 Format Check
+        run: npm run format:check
+
       - name: 🧱 Build (Production)
         run: |
           NODE_ENV=production npm run build
