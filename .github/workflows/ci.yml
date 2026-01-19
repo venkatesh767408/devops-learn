@@ -43,7 +43,7 @@ jobs:
           test -f package-lock.json
           npm ci
       - name: Security Audit (Fail on High & Critical)
-        run: npm audit --audit-level=high
+        run: npm audit --audit-level=low
 
       - name: Lint (Fail on Warnings)
         run: npm run lint -- --max-warnings=0
