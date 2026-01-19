@@ -10,7 +10,6 @@ function App() {
     if (taskText.trim() === '') return;
     const newTask = { id: Date.now(), text: taskText, completed: false };
     setTasks([newTask, ...tasks]);
-    
   };
 
   const toggleTask = (id) => {
