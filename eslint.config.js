@@ -7,6 +7,13 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 export default defineConfig([
   globalIgnores(['dist']),
   {
+    ignores: [
+      "dist/**",
+      "coverage/**",
+      "node_modules/**"
+    ]
+  },
+  {
     files: ['**/*.{js,jsx}'],
     extends: [
       js.configs.recommended,
