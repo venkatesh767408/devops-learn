@@ -5,7 +5,7 @@ import prettier from 'eslint-plugin-prettier';
 import prettierConfig from 'eslint-config-prettier';
 
 export default [
-  // Ignore generated folders
+  // Ignore generated files
   {
     ignores: ['dist/**', 'coverage/**', 'node_modules/**'],
   },
@@ -13,9 +13,10 @@ export default [
   // Base JS rules
   js.configs.recommended,
 
-  // React + JSX support
+  // ✅ React + JSX + Browser environment
   {
     files: ['**/*.{js,jsx}'],
+
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
@@ -24,22 +25,29 @@ export default [
           jsx: true,
         },
       },
+      globals: {
+        window: 'readonly',
+        document: 'readonly',
+      },
     },
+
     plugins: {
       react,
       'react-hooks': reactHooks,
       prettier,
     },
+
     rules: {
       ...react.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
 
-      // React 17+ JSX transform
+      // React 17+
       'react/react-in-jsx-scope': 'off',
 
-      // Formatting is a hard error
+      // Formatting enforced
       'prettier/prettier': 'error',
     },
+
     settings: {
       react: {
         version: 'detect',
@@ -47,6 +55,6 @@ export default [
     },
   },
 
-  // Disable ESLint rules that conflict with Prettier
+  // Disable rules that conflict with Prettier
   prettierConfig,
 ];
