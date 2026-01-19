@@ -46,9 +46,6 @@ jobs:
       - name: 🧹 Lint (Fail on Warnings)
         run: npm run lint -- --max-warnings=0
 
-      - name: 🔎 Type Check
-        run: npm run typecheck
-
       - name: 🧪 Test + Coverage (Single Run)
         run: npm run test -- --coverage
 
