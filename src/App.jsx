@@ -6,16 +6,16 @@ import './App.css';
 function App() {
   const [tasks, setTasks] = useState([]);
 
-const addTask = (taskText) => {
+  const addTask = (taskText) => {
     if (taskText.trim() === '') return;
-const newTask = { id: Date.now(), text: taskText, completed: false };
+    const newTask = { id: Date.now(), text: taskText, completed: false };
     setTasks([newTask, ...tasks]);
   };
 
   const toggleTask = (id) => {
     setTasks(
-tasks.map((task) =>
-task.id === id ? { ...task, completed: !task.completed } : task
+      tasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
       )
     );
   };
@@ -25,7 +25,7 @@ task.id === id ? { ...task, completed: !task.completed } : task
   };
 
   return (
-<div className="app">
+    <div className="app">
       <h1>Task Manager 4</h1>
       <h2 className="add-task">Add a Task here</h2>
       <TaskInput onAdd={addTask} />
