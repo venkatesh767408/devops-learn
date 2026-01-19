@@ -4,17 +4,17 @@ import TaskList from './components/TaskList';
 import './App.css';
 
 function App() {
-  const [tasks, setTasks] = useState([]);
-  const name="eagle";
+const [tasks, setTasks] = useState([]);
+  
 
   const addTask = (taskText) => {
-    if (taskText.trim() === '') return;
+if (taskText.trim() === '') return;
     const newTask = { id: Date.now(), text: taskText, completed: false };
     setTasks([newTask, ...tasks]);
   };
 
   const toggleTask = (id) => {
-    setTasks(
+setTasks(
       tasks.map((task) =>
         task.id === id ? { ...task, completed: !task.completed } : task
       )
