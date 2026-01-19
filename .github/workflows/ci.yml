@@ -18,66 +18,66 @@ env:
 
 jobs:
   # ===========================================================
-  # 🔒 STAGE 1: CONTINUOUS INTEGRATION (QUALITY GATE)
+  #  STAGE 1: CONTINUOUS INTEGRATION (QUALITY GATE)
   # ===========================================================
   ci:
-    name: 🔒 CI – Production Quality Gate
+    name:  CI – Production Quality Gate
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
-      - name: 🏗️ Checkout Repository
+      - name:  Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: ⚙️ Setup Node.js
+      - name:  Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
-      - name: 🔐 Install Dependencies (Deterministic)
+      - name:  Install Dependencies (Deterministic)
         run: |
           set -e
           test -f package-lock.json
           npm ci
 
-      - name: 🧹 Lint (Fail on Warnings)
+      - name:  Lint (Fail on Warnings)
         run: npm run lint -- --max-warnings=0
 
-      - name: 🧪 Test + Coverage (Single Run)
+      - name:  Test + Coverage (Single Run)
         run: npm run test -- --coverage
 
-      - name: 📊 Coverage Gate (≥90%)
+      - name:  Coverage Gate (≥90%)
         run: |
           node -e "
             const c = require('./coverage/coverage-summary.json').total;
             if (c.lines.pct < 90) {
-              console.error('❌ Coverage below 90%');
+              console.error(' Coverage below 90%');
               process.exit(1);
             }
           "
 
-      - name: 🎨 Format Check
+      - name:  Format Check
         run: npm run format:check
 
-      - name: 🧱 Build (Production)
+      - name:  Build (Production)
         run: |
           NODE_ENV=production npm run build
           test -f dist/index.html
 
-      - name: 📁 Upload Build Artifact
+      - name:  Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: react-build-dist
           path: dist/
 
   # ===========================================================
-  # 🚀 STAGE 2: CONTINUOUS DEPLOYMENT (NETLIFY)
+  #  STAGE 2: CONTINUOUS DEPLOYMENT (NETLIFY)
   # ===========================================================
   deploy:
-    name: 🚀 CD – Deploy to Netlify
+    name:  CD – Deploy to Netlify
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -85,21 +85,21 @@ jobs:
     if: github.ref == 'refs/heads/main' && needs.ci.result == 'success'
 
     steps:
-      - name: ⬇️ Download Build Artifact
+      - name:  Download Build Artifact
         uses: actions/download-artifact@v4
         with:
           name: react-build-dist
           path: dist
 
-      - name: 🔍 Verify Build Output
+      - name:  Verify Build Output
         run: |
           ls -la dist
           test -f dist/index.html
 
-      - name: 📦 Install Netlify CLI
+      - name:  Install Netlify CLI
         run: npm install -g netlify-cli
 
-      - name: 🚀 Deploy to Netlify (Production)
+      - name:  Deploy to Netlify (Production)
         env:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
