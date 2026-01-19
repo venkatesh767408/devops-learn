@@ -5,7 +5,7 @@ import prettier from 'eslint-plugin-prettier';
 import prettierConfig from 'eslint-config-prettier';
 
 export default [
-  // Ignore generated folders (ESLint v9 way)
+  // Ignore generated folders
   {
     ignores: ['dist/**', 'coverage/**', 'node_modules/**'],
   },
@@ -13,9 +13,18 @@ export default [
   // Base JS rules
   js.configs.recommended,
 
-  // React rules
+  // React + JSX support
   {
-    files: ['**/*.{js,jsx,ts,tsx}'],
+    files: ['**/*.{js,jsx}'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+    },
     plugins: {
       react,
       'react-hooks': reactHooks,
@@ -25,7 +34,10 @@ export default [
       ...react.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
 
-      // Prettier becomes a hard error
+      // React 17+ JSX transform
+      'react/react-in-jsx-scope': 'off',
+
+      // Formatting is a hard error
       'prettier/prettier': 'error',
     },
     settings: {
