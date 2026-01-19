@@ -1,24 +1,23 @@
-import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
 function TaskInput({ onAdd }) {
-  const [text, setText] = useState('');
-
-  const handleAdd = () => {
-    onAdd(text);
-    setText('');
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const value = e.target.task.value;
+    onAdd(value);
+    e.target.reset();
   };
 
   return (
-    <div className="task-input">
-      <input
-        type="text"
-        placeholder="Enter a new task..."
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-      />
-      <button onClick={handleAdd}>Add</button>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <input name="task" placeholder="Enter task" />
+      <button type="submit">Add</button>
+    </form>
   );
 }
+
+TaskInput.propTypes = {
+  onAdd: PropTypes.func.isRequired,
+};
 
 export default TaskInput;
