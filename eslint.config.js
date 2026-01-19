@@ -43,6 +43,7 @@ export default [
 
       // React 17+
       'react/react-in-jsx-scope': 'off',
+      'no-console': 'error',
 
       // Formatting enforced
       'prettier/prettier': 'error',
