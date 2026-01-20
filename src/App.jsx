@@ -6,11 +6,12 @@ import './App.css';
 function App() {
   const [tasks, setTasks] = useState([]);
 
+
   const addTask = (taskText) => {
     if (taskText.trim() === '') return;
     const newTask = { id: Date.now(), text: taskText, completed: false };
     setTasks([newTask, ...tasks]);
-    console.log(tasks);
+    
   };
 
   const toggleTask = (id) => {
@@ -27,7 +28,7 @@ function App() {
 
   return (
     <div className="app">
-      <h1>Task Manager 5</h1>
+      <h1>Task Manager 6</h1>
       <h2 className="add-task">Add a Task here</h2>
       <TaskInput onAdd={addTask} />
       <TaskList tasks={tasks} onToggle={toggleTask} onDelete={deleteTask} />
