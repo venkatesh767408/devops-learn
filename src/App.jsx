@@ -5,13 +5,13 @@ import './App.css';
 
 function App() {
   const [tasks, setTasks] = useState([]);
-  const name = 'Task Manager 6';
+
 
   const addTask = (taskText) => {
     if (taskText.trim() === '') return;
     const newTask = { id: Date.now(), text: taskText, completed: false };
     setTasks([newTask, ...tasks]);
-    console.log();
+   
   };
 
   const toggleTask = (id) => {
