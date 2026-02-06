@@ -4,6 +4,7 @@ import TaskList from './components/TaskList';
 import './App.css';
 
 function App() {
+  const name = 'Task Manager';
   const [tasks, setTasks] = useState([]);
   const addTask = (taskText) => {
     if (taskText.trim() === '') return;
