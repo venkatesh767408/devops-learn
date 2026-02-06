@@ -21,10 +21,11 @@ function App() {
 
   const deleteTask = (id) => {
     setTasks(tasks.filter((task) => task.id !== id));
+    consiole.log(id);
   };
 
   return (
-<div className="app">
+    <div className="app">
       <h1>Task Manager 8</h1>
       <h2 className="add-task">Add a Task here</h2>
       <TaskInput onAdd={addTask} />
