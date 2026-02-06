@@ -5,18 +5,20 @@ import './App.css';
 
 function App() {
   const [tasks, setTasks] = useState([]);
+  const name="Task Manager 7";
   const addTask = (taskText) => {
     if (taskText.trim() === '') return;
     const newTask = { id: Date.now(), text: taskText, completed: false };
     setTasks([newTask, ...tasks]);
   };
 
-  const toggleTask = (id) => {
+const toggleTask = (id) => {
     setTasks(
       tasks.map((task) =>
         task.id === id ? { ...task, completed: !task.completed } : task
       )
     );
+    console.log(id);
   };
 
   const deleteTask = (id) => {
