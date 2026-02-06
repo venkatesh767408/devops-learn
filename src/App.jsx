@@ -21,7 +21,7 @@ function App() {
 
   const deleteTask = (id) => {
     setTasks(tasks.filter((task) => task.id !== id));
-    consiole.log(id);
+    console.log(id);
   };
 
   return (
