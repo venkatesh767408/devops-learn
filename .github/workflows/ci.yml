@@ -42,7 +42,6 @@ jobs:
           set -e
           test -f package-lock.json
           npm ci
-      
 
       - name: Lint (Fail on Warnings)
         run: npm run lint -- --max-warnings=0
